@@ -1,6 +1,7 @@
 #pragma once
 
 #include "renderSetting.h"
+#include "renderer.h"
 
 #include <GLFW/glfw3.h>
 #include <memory>
@@ -13,13 +14,14 @@ class Renderer;
 class CielApp
 {
 public:
-    CielApp();
-    ~CielApp();
-
     void run();
-    void init(const RenderSetting &setting)
+    void init(int windowW, int windowH);
+
+    void                 setNeedRender(bool need) { m_needRender = need; }
+    const RenderSetting& getRenderSetting() { return m_renderSetting; }
+    void                 setRenderSetting(const RenderSetting& newSetting)
     {
-        initGLFW(setting.render_w, setting.render_h);
+        m_renderSetting = newSetting;
     }
 
 private:
@@ -28,10 +30,14 @@ private:
     void cleanup();
 
 private:
-    std::unique_ptr<Renderer> mRenderer;
+    std::unique_ptr<Renderer> m_renderer;
+    RenderSetting             m_renderSetting;
 
     // GLFW Window
-    GLFWwindow *m_window;
+    GLFWwindow* m_window;
+
+    bool m_needRender = true;
+    bool m_isInitialized = false;
 };
 
 } // namespace ciel

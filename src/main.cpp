@@ -6,10 +6,11 @@
 
 // import std;  # clang doesn't support modules yet
 
-int main(int, char**)
+int main(int argn, char** argv)
 {
+    // TODO: take window size as an argument
     ciel::CielApp app;
-    app.init(ciel::RenderSetting{800, 600});
+    app.init(800, 600);
 
     try {
         app.run();

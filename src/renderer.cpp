@@ -7,10 +7,6 @@
 #include <iostream>
 #include <print>
 
-constexpr float TEMP_DS = 0.001;
-constexpr float TEMP_DLS = 0.00025;
-constexpr int   TEMP_K = 10; // 600         // ** This one is critical
-
 namespace ciel {
 
 void Renderer::Render(const RenderSetting& setting)
@@ -19,7 +15,7 @@ void Renderer::Render(const RenderSetting& setting)
     if (mScene == nullptr) {
         mScene = Scene::create();
     }
-    mScene->init(setting.render_w, setting.render_h);
+    mScene->init(setting.renderW, setting.renderH);
 
     // Occupy vector storage
     mPixmap.resize(setting.pixmapSize());
@@ -27,25 +23,25 @@ void Renderer::Render(const RenderSetting& setting)
     // total number of steps
     const float nSteps = (mScene->getCamera()->farPlane() -
                           mScene->getCamera()->nearPlane()) /
-                         TEMP_DS; // total sample N
+                         setting.rayDt; // total sample N
 
     std::println("[ciel][render] Start Rendering...");
     auto startTime = std::chrono::system_clock::now();
 
     // Render!
-    for (size_t j = 0; j < setting.render_h; j++) {
-        for (size_t i = 0; i < setting.render_w; i++) {
+    for (size_t j = 0; j < setting.renderH; j++) {
+        for (size_t i = 0; i < setting.renderW; i++) {
             const Vector ray = mScene->getCamera()->view(
-                (float)i / setting.render_w, (float)j / setting.render_h);
+                (float)i / setting.renderW, (float)j / setting.renderH);
 #ifdef _OPENMP
             const Color c = RayMarchOMP(ray, nSteps, setting);
 #else
             const Color c = RayMarch(ray, nSteps, setting);
 #endif // _OPENMP
-            mPixmap[(j * setting.render_w + i) * 4 + 0] = c.X();
-            mPixmap[(j * setting.render_w + i) * 4 + 1] = c.Y();
-            mPixmap[(j * setting.render_w + i) * 4 + 2] = c.Z();
-            mPixmap[(j * setting.render_w + i) * 4 + 3] = c.W();
+            mPixmap[(j * setting.renderW + i) * 4 + 0] = c.X();
+            mPixmap[(j * setting.renderW + i) * 4 + 1] = c.Y();
+            mPixmap[(j * setting.renderW + i) * 4 + 2] = c.Z();
+            mPixmap[(j * setting.renderW + i) * 4 + 3] = c.W();
         }
     }
 
@@ -78,7 +74,7 @@ Color Renderer::RayMarch(const Vector&        ray,
         Color cx;
 
         // 1. Compute X(p,s)
-        xp += ray * TEMP_DS;
+        xp += ray * setting.rayDt;
 
         // 2. Density(X)    * Important Step!
         mScene->eval(xp, density, cx);
@@ -86,7 +82,7 @@ Color Renderer::RayMarch(const Vector&        ray,
                       ? 0
                       : 1; // density;
         // try to stay exp(K), 0 < K < ds
-        const float dt = exp(-1.f * TEMP_K * TEMP_DLS * density);
+        const float dt = exp(-1.f * setting.expK * density);
 
         // 3. Color(X)
         if (density > 0) {
@@ -110,13 +106,14 @@ Color Renderer::RayMarchOMP(const Vector&        ray,
 
     std::vector<std::pair<Color, float>> record(nSteps);
 
-#pragma omp parallel for
+#pragma omp parallel for default(none),                                        \
+    shared(ray, nSteps, setting, pStart, record), schedule(static)
     for (size_t j = 0; j < nSteps; j++) {
         float density = 0.0;
         Color cx;
 
         // 1. Compute X(p,s)
-        const Vector xp = pStart + ray * j * TEMP_DS;
+        const Vector xp = pStart + ray * j * setting.rayDt;
 
         // 2. Density(X)    * Important Step!
         mScene->eval(xp, density, cx);
@@ -124,9 +121,9 @@ Color Renderer::RayMarchOMP(const Vector&        ray,
                       ? 0
                       : 1;
         // try to stay exp(K), 0 < K < ds
-        const float dt = exp(-1.f * TEMP_K * TEMP_DLS * density);
+        const float dt = exp(-1.f * setting.expK * density);
 
-        record[j] = std::pair<Color, float>(cx, dt);
+        record[j] = std::pair<Color, float>(cx * (1 - dt), dt);
     }
 
     Color L(0, 0, 0, 1); // color attenuated by length (init. black)
@@ -139,7 +136,7 @@ Color Renderer::RayMarchOMP(const Vector&        ray,
 
         // 3. Color(X)
         if (dt < 1) {
-            L += cx * (1 - dt) * T;
+            L += cx * T;
         }
 
         // 4. Transmissity
