@@ -43,3 +43,5 @@ SpaceAfterTemplateKeyword: false
 SplitEmptyFunction: true
 SplitEmptyRecord: true
 # PenaltyBreakBeforeFirstCallParameter: 1
+PointerAlignment: Left
+ReferenceAlignment: Left

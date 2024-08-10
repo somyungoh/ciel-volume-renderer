@@ -2,11 +2,12 @@
 
 #include "math/vector.h"
 
+#include <memory> // shared_ptr
+
 namespace ciel {
 
 class Camera
 {
-
 public:
     Camera()
     : mFov(60.0)
@@ -16,6 +17,11 @@ public:
     {
         setEyeViewUp(Vector(0, 0, 1), Vector(0, 0, -1), Vector(0, 1, 0));
     }
+
+    using Ptr = std::shared_ptr<Camera>;
+    using ConstPtr = std::shared_ptr<const Camera>;
+    static Ptr      create() { return std::make_shared<Camera>(); }
+    static ConstPtr createConst() { return std::make_shared<const Camera>(); }
 
     void setEyeViewUp(const Vector &eye, const Vector &view, const Vector &up)
     {
@@ -33,8 +39,8 @@ public:
     // but the values can extend beyond that
     const Vector view(const float x, const float y)
     {
-        double xx = (2.0 * x - 1.0) * htanfov;
-        double yy = (2.0 * y - 1.0) * vtanfov;
+        float xx = (2.0 * x - 1.0) * htanfov;
+        float yy = (2.0 * y - 1.0) * vtanfov;
         return (mUp * yy + mRight * xx + mView).unitvector();
     }
 

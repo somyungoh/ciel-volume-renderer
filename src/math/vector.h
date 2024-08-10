@@ -7,21 +7,18 @@ namespace ciel {
 class Vector
 {
 public:
-    Vector() { xyz[0] = xyz[1] = xyz[2] = 0; }
-    ~Vector() = default;
-
-    Vector(const Vector &v)
+    constexpr Vector()
+    : xyz{}
     {
-        xyz[0] = v.xyz[0];
-        xyz[1] = v.xyz[1];
-        xyz[2] = v.xyz[2];
+    }
+    constexpr Vector(const Vector &v)
+    : xyz{v.xyz[0], v.xyz[1], v.xyz[2]}
+    {
     }
 
-    Vector(const double a, const double b, const double c)
+    constexpr Vector(const float a, const float b, const float c)
+    : xyz{a, b, c}
     {
-        xyz[0] = a;
-        xyz[1] = b;
-        xyz[2] = c;
     }
 
     void set(const float vx, const float vy, const float vz)
@@ -46,23 +43,23 @@ public:
         return Vector(-v.xyz[0], -v.xyz[1], -v.xyz[2]);
     }
 
-    friend const Vector operator*(const double w, const Vector &v)
+    friend const Vector operator*(const float w, const Vector &v)
     {
         return v * w;
     }
 
-    const Vector operator*(const double v) const
+    const Vector operator*(const float v) const
     {
         return Vector(xyz[0] * v, xyz[1] * v, xyz[2] * v);
     }
 
-    const Vector operator/(const double v) const
+    const Vector operator/(const float v) const
     {
         return Vector(xyz[0] / v, xyz[1] / v, xyz[2] / v);
     }
 
     // dot product
-    double operator*(const Vector &v) const
+    float operator*(const Vector &v) const
     {
         return (xyz[0] * v.xyz[0] + xyz[1] * v.xyz[1] + xyz[2] * v.xyz[2]);
     }
@@ -99,7 +96,7 @@ public:
         return *this;
     }
 
-    Vector &operator*=(const double v)
+    Vector &operator*=(const float v)
     {
         xyz[0] *= v;
         xyz[1] *= v;
@@ -107,7 +104,7 @@ public:
         return *this;
     }
 
-    Vector &operator/=(const double v)
+    Vector &operator/=(const float v)
     {
         xyz[0] /= v;
         xyz[1] /= v;
@@ -115,15 +112,15 @@ public:
         return *this;
     }
 
-    const double &operator[](const int v) const { return xyz[v]; }
-    double       &operator[](const int v) { return xyz[v]; }
-    const double &operator()(const int v) const { return xyz[v]; }
+    const float &operator[](const int v) const { return xyz[v]; }
+    float       &operator[](const int v) { return xyz[v]; }
+    const float &operator()(const int v) const { return xyz[v]; }
 
-    double X() const { return xyz[0]; }
-    double Y() const { return xyz[1]; }
-    double Z() const { return xyz[2]; }
+    float X() const { return xyz[0]; }
+    float Y() const { return xyz[1]; }
+    float Z() const { return xyz[2]; }
 
-    double magnitude() const
+    float magnitude() const
     {
         return sqrt(xyz[0] * xyz[0] + xyz[1] * xyz[1] + xyz[2] * xyz[2]);
     }
@@ -132,7 +129,7 @@ public:
 
     void normalize()
     {
-        double mag = magnitude();
+        float mag = magnitude();
         xyz[0] /= mag;
         xyz[1] /= mag;
         xyz[2] /= mag;
@@ -177,7 +174,7 @@ public:
     }
 
 private:
-    double xyz[3];
+    float xyz[3];
 };
 
 } // namespace ciel

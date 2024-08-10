@@ -2,15 +2,9 @@ cmake_minimum_required(VERSION 3.12)
 project(Ciel VERSION 0.1.0 LANGUAGES CXX)
 
 # Ciel CMake config
+include(${CMAKE_HOME_DIRECTORY}/cmake/CielConfig.cmake)
 include(${CMAKE_HOME_DIRECTORY}/cmake/CielCompileOpts.cmake)
 include(${CMAKE_HOME_DIRECTORY}/cmake/CielFindDeps.cmake)
-
-# output directories
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-# build tests
-include(CTest)
-enable_testing()
 
 # source
 add_subdirectory(src)

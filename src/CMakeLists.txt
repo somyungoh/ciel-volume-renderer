@@ -8,8 +8,9 @@ include_directories(${GLFW_INCLUDE_DIRS})
 
 add_executable(CielApp
     cielApp.cpp
-    Renderer.cpp
+    renderer.cpp
     main.cpp
+    scene.cpp
 )
 
 # linking

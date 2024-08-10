@@ -2,19 +2,10 @@
 
 ### Building
 #### Linux, macOS:
-Configure using `CMake`:
 ```
-mkdir build
-cd build
+mkdir build && cd build
 cmake ..
-```
-Then run the build:
-```
-make
-```
-or
-```
-cmake --build .
+make    # or cmake --build .
 ```
 #### Windows
 Not implemented.

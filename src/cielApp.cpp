@@ -1,7 +1,6 @@
 #include "cielApp.h"
 #include "renderer.h"
 
-#include <chrono>
 #include <cstring>
 #include <iostream>
 #include <stdexcept>
@@ -9,7 +8,7 @@
 namespace ciel {
 
 CielApp::CielApp()
-: m_renderer(std::make_unique<Renderer>()){};
+: mRenderer(std::make_unique<Renderer>()) {};
 CielApp::~CielApp() = default;
 
 void CielApp::run()
@@ -19,7 +18,7 @@ void CielApp::run()
 }
 
 void keyCallback(
-    GLFWwindow *window, int key, int scancode, int action, int mods)
+    GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     // if (key == GLFW_KEY_S && action == GLFW_PRESS)
     //     saveJpeg(renderSetting.render_w, renderSetting.render_h);
@@ -45,20 +44,18 @@ void CielApp::initGLFW(int width, int height)
         printf("Failed to initialize GLFW window");
         return;
     }
-    else
-        printf("Successfully initialized GLFW window");
 }
 
 void CielApp::mainLoop()
 {
     // render setting
     RenderSetting renderSetting;
-    renderSetting.render_w = 800;
-    renderSetting.render_w = 600;
+    renderSetting.render_w = 400;
+    renderSetting.render_h = 300;
 
     // render!
-    m_renderer->render(renderSetting);
-    std::vector<float> pixmap = m_renderer->getLastRender();
+    mRenderer->Render(renderSetting);
+    std::vector<float> pixmap = mRenderer->getLastRender();
 
     while (!glfwWindowShouldClose(m_window)) {
         // display
@@ -81,7 +78,7 @@ void CielApp::mainLoop()
                     fbuffer_h / renderSetting.render_h);
         glDrawPixels(renderSetting.render_w,
                      renderSetting.render_h,
-                     GL_RGB,
+                     GL_RGBA,
                      GL_FLOAT,
                      pixmap.data());
 

@@ -28,7 +28,7 @@ private:
     void cleanup();
 
 private:
-    std::unique_ptr<Renderer> m_renderer;
+    std::unique_ptr<Renderer> mRenderer;
 
     // GLFW Window
     GLFWwindow *m_window;
