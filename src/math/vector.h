@@ -1,7 +1,10 @@
 #pragma once
 
 #include <cmath>
+#include <experimental/simd>
 #include <math.h>
+
+namespace stdx = std::experimental;
 
 namespace ciel {
 

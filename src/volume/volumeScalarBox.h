@@ -3,9 +3,6 @@
 #include "math/vector.h"
 #include "volumeBase.h"
 
-#include <algorithm>
-#include <memory>
-
 namespace ciel {
 
 class VolumeScalarBox : public VolumeScalar
@@ -21,21 +18,21 @@ public:
     using Ptr = std::shared_ptr<VolumeScalarBox>;
     using ConstPtr = std::shared_ptr<const VolumeScalarBox>;
 
-    volumeDataType eval(const Vector& p) const override
+    float eval(const Vector& p) const override
     {
         const Vector q = abs(p - m_center) - m_bound + m_exp;
 
         // The original equation equals d == 0 to be "inside", but our renderer
         // is (d > 0) == "inside" so we do a bit of hack.
         //    return length(max(q, 0)) - m_exp;
-        volumeDataType sign = length(max(q, 0)) - m_exp;
+        float sign = length(max(q, 0)) - m_exp;
         return sign < std::numeric_limits<float>::epsilon() ? 1 : -sign;
     }
 
-    [[deprecated("Not Implemented!")]] volumeDxDyType
+    [[deprecated("Not Implemented!")]] Vector
     dxdy([[maybe_unused]] const Vector& p) const override
     {
-        return volumeDxDyType{};
+        return Vector{};
     }
 
     static Ptr create(const Vector& center, const Vector& bound, float exponent)

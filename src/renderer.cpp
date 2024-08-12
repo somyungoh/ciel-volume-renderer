@@ -36,11 +36,9 @@ void Renderer::Render(const RenderSetting& setting)
         for (size_t i = 0; i < setting.renderW; i++) {
             const Vector ray = m_scene->getCamera()->view(
                 (float)i / setting.renderW, (float)j / setting.renderH);
-#if 0 //_OPENMP
-            const Color c = RayMarchOMP(ray, nSteps, setting);
-#else
+
             const Color c = RayMarch(ray, nSteps, setting);
-#endif // _OPENMP
+
             m_pixmap[(j * setting.renderW + i) * 4 + 0] = c.X();
             m_pixmap[(j * setting.renderW + i) * 4 + 1] = c.Y();
             m_pixmap[(j * setting.renderW + i) * 4 + 2] = c.Z();

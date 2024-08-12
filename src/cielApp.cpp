@@ -42,11 +42,11 @@ void keyCallback(
         RenderSetting setting = app->getRenderSetting();
 
         if (key == GLFW_KEY_S) {
-            setting.rayDt -= 0.0001;
+            setting.rayDt -= 0.00025;
             std::cout << "Change rayDt: " << setting.rayDt << std::endl;
         }
         if (key == GLFW_KEY_D) {
-            setting.rayDt += 0.0001;
+            setting.rayDt += 0.0005;
             std::cout << "Change rayDt: " << setting.rayDt << std::endl;
         }
         if (key == GLFW_KEY_W) {

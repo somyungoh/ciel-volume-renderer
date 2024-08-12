@@ -18,9 +18,9 @@ class VolumeScalarUnion : public VolumeScalar
 public:
     VolumeScalarUnion(VolumeScalar::Ptr tField1, VolumeScalar::Ptr tField2)
     : mField1(tField1)
-    , mField2(tField2){};
+    , mField2(tField2) {};
 
-    volumeDataType eval(const Vector &p) const override
+    float eval(const Vector& p) const override
     {
         return std::max(mField1->eval(p), mField2->eval(p));
     }
@@ -36,9 +36,9 @@ public:
     VolumeScalarIntersection(VolumeScalar::Ptr tField1,
                              VolumeScalar::Ptr tField2)
     : mField1(tField1)
-    , mField2(tField2){};
+    , mField2(tField2) {};
 
-    volumeDataType eval(const Vector &p) const override
+    float eval(const Vector& p) const override
     {
         return std::min(mField1->eval(p), mField2->eval(p));
     }
@@ -53,9 +53,9 @@ class VolumeScalarCutout : public VolumeScalar
 public:
     VolumeScalarCutout(VolumeScalar::Ptr tField1, VolumeScalar::Ptr tField2)
     : mField1(tField1)
-    , mField2(tField2){};
+    , mField2(tField2) {};
 
-    volumeDataType eval(const Vector &p) const override
+    float eval(const Vector& p) const override
     {
         return std::min(mField1->eval(p), -1.f * mField2->eval(p));
     }
@@ -70,7 +70,7 @@ class VolumeScalarShell : public VolumeScalar
 public:
     VolumeScalarShell(VolumeScalar::Ptr tField1, float tThickness);
 
-    volumeDataType eval(const Vector &p) const override
+    float eval(const Vector& p) const override
     {
         return std::min((mField->eval(p) + mThickness / 2.f),
                         -1.f * (mField->eval(p) - mThickness / 2.f));

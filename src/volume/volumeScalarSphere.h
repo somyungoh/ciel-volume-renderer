@@ -3,8 +3,6 @@
 #include "math/vector.h"
 #include "volumeBase.h"
 
-#include <memory>
-
 namespace ciel {
 
 class VolumeScalarSphere : public VolumeScalar
@@ -19,11 +17,11 @@ public:
     using Ptr = std::shared_ptr<VolumeScalarSphere>;
     using ConstPtr = std::shared_ptr<const VolumeScalarSphere>;
 
-    volumeDataType eval(const Vector& p) const override
+    float eval(const Vector& p) const override
     {
         return (m_radius - length(p - m_center));
     }
-    volumeDxDyType dxdy(const Vector& p) const override
+    Vector dxdy(const Vector& p) const override
     {
         return -1.f * (p - m_center) / Vector(p - m_center).magnitude();
     }
