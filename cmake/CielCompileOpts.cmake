@@ -10,3 +10,6 @@ if (MSVC)
 else()
     add_compile_options(-Wall -Wextra -Wreturn-type -pedantic) # -Werror
 endif()
+
+# OpenMP
+set (CIEL_BUILD_WITH_OMP 1)

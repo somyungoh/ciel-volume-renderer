@@ -26,8 +26,8 @@ void CielApp::init(int windowW, int windowH)
     m_renderer = std::make_unique<Renderer>();
 
     // render setting
-    m_renderSetting.renderW = 400; // TODO: proportion to window size
-    m_renderSetting.renderH = 300; // TODO: proportion to window size
+    m_renderSetting.renderW = windowW; // TODO: proportion to window size
+    m_renderSetting.renderH = windowH; // TODO: proportion to window size
     m_renderSetting.rayDt = 0.01;
     m_renderSetting.expK = 0.02;
 

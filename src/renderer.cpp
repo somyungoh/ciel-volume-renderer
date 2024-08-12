@@ -12,36 +12,39 @@ namespace ciel {
 void Renderer::Render(const RenderSetting& setting)
 {
     // Init Scene
-    if (mScene == nullptr) {
-        mScene = Scene::create();
+    if (m_scene == nullptr) {
+        m_scene = Scene::create();
     }
-    mScene->init(setting.renderW, setting.renderH);
+    m_scene->init(setting.renderW, setting.renderH);
 
     // Occupy vector storage
-    mPixmap.resize(setting.pixmapSize());
+    m_pixmap.resize(setting.pixmapSize());
 
     // total number of steps
-    const float nSteps = (mScene->getCamera()->farPlane() -
-                          mScene->getCamera()->nearPlane()) /
+    const float nSteps = (m_scene->getCamera()->farPlane() -
+                          m_scene->getCamera()->nearPlane()) /
                          setting.rayDt; // total sample N
 
     std::println("[ciel][render] Start Rendering...");
     auto startTime = std::chrono::system_clock::now();
 
     // Render!
+#ifdef _OPENMP
+#pragma omp parallel for default(none) shared(setting, nSteps, m_pixmap)
+#endif // _OPENMP
     for (size_t j = 0; j < setting.renderH; j++) {
         for (size_t i = 0; i < setting.renderW; i++) {
-            const Vector ray = mScene->getCamera()->view(
+            const Vector ray = m_scene->getCamera()->view(
                 (float)i / setting.renderW, (float)j / setting.renderH);
-#ifdef _OPENMP
+#if 0 //_OPENMP
             const Color c = RayMarchOMP(ray, nSteps, setting);
 #else
             const Color c = RayMarch(ray, nSteps, setting);
 #endif // _OPENMP
-            mPixmap[(j * setting.renderW + i) * 4 + 0] = c.X();
-            mPixmap[(j * setting.renderW + i) * 4 + 1] = c.Y();
-            mPixmap[(j * setting.renderW + i) * 4 + 2] = c.Z();
-            mPixmap[(j * setting.renderW + i) * 4 + 3] = c.W();
+            m_pixmap[(j * setting.renderW + i) * 4 + 0] = c.X();
+            m_pixmap[(j * setting.renderW + i) * 4 + 1] = c.Y();
+            m_pixmap[(j * setting.renderW + i) * 4 + 2] = c.Z();
+            m_pixmap[(j * setting.renderW + i) * 4 + 3] = c.W();
         }
     }
 
@@ -60,8 +63,8 @@ Color Renderer::RayMarch(const Vector&        ray,
                          const size_t         nSteps,
                          const RenderSetting& setting)
 {
-    Vector xp = mScene->getCamera()->eye() +
-                ray * mScene->getCamera()->nearPlane(); // first position
+    Vector xp = m_scene->getCamera()->eye() +
+                ray * m_scene->getCamera()->nearPlane(); // first position
     Color L(0, 0, 0, 1); // color attenuated by length (init. black)
     float T = 1;         // total transmissity
 
@@ -77,7 +80,7 @@ Color Renderer::RayMarch(const Vector&        ray,
         xp += ray * setting.rayDt;
 
         // 2. Density(X)    * Important Step!
-        mScene->eval(xp, density, cx);
+        m_scene->eval(xp, density, cx);
         density = density < std::numeric_limits<float>::epsilon() // masking
                       ? 0
                       : 1; // density;
@@ -101,8 +104,8 @@ Color Renderer::RayMarchOMP(const Vector&        ray,
                             const size_t         nSteps,
                             const RenderSetting& setting)
 {
-    const Vector pStart = mScene->getCamera()->eye() +
-                          ray * mScene->getCamera()->nearPlane();
+    const Vector pStart = m_scene->getCamera()->eye() +
+                          ray * m_scene->getCamera()->nearPlane();
 
     std::vector<std::pair<Color, float>> record(nSteps);
 
@@ -116,7 +119,7 @@ Color Renderer::RayMarchOMP(const Vector&        ray,
         const Vector xp = pStart + ray * j * setting.rayDt;
 
         // 2. Density(X)    * Important Step!
-        mScene->eval(xp, density, cx);
+        m_scene->eval(xp, density, cx);
         density = density < std::numeric_limits<float>::epsilon() // masking
                       ? 0
                       : 1;

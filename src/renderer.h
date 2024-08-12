@@ -12,24 +12,24 @@ class Renderer
 {
 public:
     // Main render logic
-    void Render(const RenderSetting &setting);
+    void Render(const RenderSetting& setting);
 
-    [[nodiscard]] Color RayMarch(const Vector        &ray,
+    [[nodiscard]] Color RayMarch(const Vector&        ray,
                                  const size_t         nSteps,
-                                 const RenderSetting &setting);
-    [[nodiscard]] Color RayMarchOMP(const Vector        &ray,
+                                 const RenderSetting& setting);
+    [[nodiscard]] Color RayMarchOMP(const Vector&        ray,
                                     const size_t         nSteps,
-                                    const RenderSetting &setting);
+                                    const RenderSetting& setting);
 
     // Returns a copy of last rendered pixels
     [[nodiscard]] std::vector<float> getLastRender() const
     {
-        return std::vector<float>(mPixmap);
+        return std::vector<float>(m_pixmap);
     }
 
 private:
-    Scene::Ptr         mScene;
-    std::vector<float> mPixmap;
+    Scene::Ptr         m_scene;
+    std::vector<float> m_pixmap;
 };
 
 } // namespace ciel
