@@ -11,8 +11,8 @@ class VolumeScalarSphere : public VolumeScalar
 {
 public:
     VolumeScalarSphere(const Vector& tCenter, float tRadius)
-    : mCenter(tCenter)
-    , mRadius(tRadius)
+    : m_center(tCenter)
+    , m_radius(tRadius)
     {
     }
 
@@ -21,11 +21,11 @@ public:
 
     volumeDataType eval(const Vector& p) const override
     {
-        return (mRadius - Vector(p - mCenter).magnitude());
+        return (m_radius - length(p - m_center));
     }
     volumeDxDyType dxdy(const Vector& p) const override
     {
-        return -1.f * (p - mCenter) / Vector(p - mCenter).magnitude();
+        return -1.f * (p - m_center) / Vector(p - m_center).magnitude();
     }
 
     static Ptr create(const Vector& center, float radius)
@@ -37,14 +37,14 @@ public:
         return std::make_shared<const VolumeScalarSphere>(center, radius);
     }
 
-    Vector center() const { return mCenter; }
-    float  radius() const { return mRadius; }
-    void   setCenter(const Vector& center) { mCenter = center; }
-    void   setRadius(float radius) { mRadius = radius; }
+    Vector center() const { return m_center; }
+    float  radius() const { return m_radius; }
+    void   setCenter(const Vector& center) { m_center = center; }
+    void   setRadius(float radius) { m_radius = radius; }
 
 private:
-    Vector mCenter;
-    float  mRadius;
+    Vector m_center;
+    float  m_radius;
 };
 
 } // namespace ciel
