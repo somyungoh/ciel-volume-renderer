@@ -24,5 +24,11 @@ if(OpenMP_CXX_FOUND)
     target_link_libraries(CielApp PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
+# ImGui
+if(CIEL_BUILD_WITH_IMGUI)
+    target_include_directories(CielApp PRIVATE ${CMAKE_HOME_DIRECTORY}/external/imgui)
+    target_link_libraries(CielApp PRIVATE CielImGui)
+endif()
+
 # other properties
 set_property(TARGET CielApp PROPERTY CXX_STANDARD 23)

@@ -26,7 +26,18 @@ public:
 
 private:
     void initGLFW(int width, int height);
+    void initImGui();
+
+    // openGL stuff
+    void createGLShader(unsigned int& outShaderProgram);
+    void createGLQuad(void*         textureData,
+                      unsigned int& outVBO,
+                      unsigned int& outVAO,
+                      unsigned int& outEBO,
+                      unsigned int& outTextureID);
+
     void mainLoop();
+
     void cleanup();
 
 private:

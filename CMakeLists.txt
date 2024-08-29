@@ -9,6 +9,9 @@ include(${CMAKE_HOME_DIRECTORY}/cmake/CielFindDeps.cmake)
 # source
 add_subdirectory(src)
 
+# external source
+add_subdirectory(external)
+
 # project info
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

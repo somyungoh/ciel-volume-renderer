@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.24)
 
 if(APPLE)
     add_compile_definitions(GL_SILENCE_DEPRECATION=1)
@@ -13,3 +13,6 @@ endif()
 
 # OpenMP
 set (CIEL_BUILD_WITH_OMP 1)
+
+# ImGui
+set (CIEL_BUILD_WITH_IMGUI 1)
